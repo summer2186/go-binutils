@@ -1,3 +1,3 @@
-module go-binutils
+module github.com/summer2186/go-binutils
 
-go 1.21
+go 1.18

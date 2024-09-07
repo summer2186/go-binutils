@@ -102,7 +102,7 @@ func (buffer *Buffer) ReadUint8() (v uint8, err error) {
 
 // AppendUint16BE 大端方式添加uint16
 func (buffer *Buffer) AppendUint16BE(v uint16) error {
-	buffer.buf = append(buffer.buf, uint8(v), uint8(v>>8))
+	buffer.buf = append(buffer.buf, uint8(v>>8), uint8(v))
 	return nil
 }
 
@@ -115,15 +115,15 @@ func (buffer *Buffer) ReadUint16BE() (v uint16, err error) {
 	}
 	buffer.index = i
 
-	v = uint16(buffer.buf[i-2])
-	v |= uint16(buffer.buf[i-1]) << 8
+	v = uint16(buffer.buf[i-1])
+	v |= uint16(buffer.buf[i-2]) << 8
 
 	return
 }
 
 // AppendInt16BE 大端方式添加int16
 func (buffer *Buffer) AppendInt16BE(v int16) error {
-	buffer.buf = append(buffer.buf, uint8(v), uint8(v>>8))
+	buffer.buf = append(buffer.buf, uint8(v>>8), uint8(v))
 	return nil
 }
 
@@ -136,15 +136,15 @@ func (buffer *Buffer) ReadInt16BE() (v int16, err error) {
 	}
 	buffer.index = i
 
-	v = int16(buffer.buf[i-2])
-	v |= int16(buffer.buf[i-1]) << 8
+	v = int16(buffer.buf[i-1])
+	v |= int16(buffer.buf[i-2]) << 8
 
 	return
 }
 
 // AppendUint16LE 小端方式添加uint16
 func (buffer *Buffer) AppendUint16LE(v uint16) error {
-	buffer.buf = append(buffer.buf, uint8(v>>8), uint8(v))
+	buffer.buf = append(buffer.buf, uint8(v), uint8(v>>8))
 	return nil
 }
 
@@ -157,8 +157,8 @@ func (buffer *Buffer) ReadUint16LE() (v uint16, err error) {
 	}
 	buffer.index = i
 
-	v = uint16(buffer.buf[i-1])
-	v |= uint16(buffer.buf[i-2]) << 8
+	v = uint16(buffer.buf[i-2])
+	v |= uint16(buffer.buf[i-1]) << 8
 
 	return
 }
@@ -178,8 +178,8 @@ func (buffer *Buffer) ReadInt16LE() (v int16, err error) {
 	}
 	buffer.index = i
 
-	v = int16(buffer.buf[i-1])
-	v |= int16(buffer.buf[i-2]) << 8
+	v = int16(buffer.buf[i-2])
+	v |= int16(buffer.buf[i-1]) << 8
 
 	return
 }
@@ -189,10 +189,10 @@ func (buffer *Buffer) ReadInt16LE() (v int16, err error) {
 // AppendUint32BE 大端方式添加uint32
 func (buffer *Buffer) AppendUint32BE(v uint32) error {
 	buffer.buf = append(buffer.buf,
-		uint8(v),
-		uint8(v>>8),
+		uint8(v>>24),
 		uint8(v>>16),
-		uint8(v>>24))
+		uint8(v>>8),
+		uint8(v))
 	return nil
 }
 
@@ -205,10 +205,10 @@ func (buffer *Buffer) ReadUint32BE() (v uint32, err error) {
 	}
 	buffer.index = i
 
-	v = uint32(buffer.buf[i-4])
-	v |= uint32(buffer.buf[i-3]) << 8
-	v |= uint32(buffer.buf[i-2]) << 16
-	v |= uint32(buffer.buf[i-1]) << 24
+	v = uint32(buffer.buf[i-1])
+	v |= uint32(buffer.buf[i-2]) << 8
+	v |= uint32(buffer.buf[i-3]) << 16
+	v |= uint32(buffer.buf[i-4]) << 24
 
 	return
 }
@@ -216,10 +216,10 @@ func (buffer *Buffer) ReadUint32BE() (v uint32, err error) {
 // AppendInt32BE 大端方式添加int32
 func (buffer *Buffer) AppendInt32BE(v int32) error {
 	buffer.buf = append(buffer.buf,
-		uint8(v),
-		uint8(v>>8),
+		uint8(v>>24),
 		uint8(v>>16),
-		uint8(v>>24))
+		uint8(v>>8),
+		uint8(v))
 	return nil
 }
 
@@ -232,10 +232,10 @@ func (buffer *Buffer) ReadInt32BE() (v int32, err error) {
 	}
 	buffer.index = i
 
-	v = int32(buffer.buf[i-4])
-	v |= int32(buffer.buf[i-3]) << 8
-	v |= int32(buffer.buf[i-2]) << 16
-	v |= int32(buffer.buf[i-1]) << 24
+	v = int32(buffer.buf[i-1])
+	v |= int32(buffer.buf[i-2]) << 8
+	v |= int32(buffer.buf[i-3]) << 16
+	v |= int32(buffer.buf[i-4]) << 24
 
 	return
 }
@@ -243,10 +243,10 @@ func (buffer *Buffer) ReadInt32BE() (v int32, err error) {
 // AppendUint32LE 小端方式添加uint32
 func (buffer *Buffer) AppendUint32LE(v uint32) error {
 	buffer.buf = append(buffer.buf,
-		uint8(v>>24),
-		uint8(v>>16),
+		uint8(v),
 		uint8(v>>8),
-		uint8(v))
+		uint8(v>>16),
+		uint8(v>>24))
 	return nil
 }
 
@@ -283,10 +283,10 @@ func (buffer *Buffer) ReadInt32LE() (v int32, err error) {
 	}
 	buffer.index = i
 
-	v = int32(buffer.buf[i-1])
-	v |= int32(buffer.buf[i-2]) << 8
-	v |= int32(buffer.buf[i-3]) << 16
-	v |= int32(buffer.buf[i-4]) << 24
+	v = int32(buffer.buf[i-4])
+	v |= int32(buffer.buf[i-3]) << 8
+	v |= int32(buffer.buf[i-2]) << 16
+	v |= int32(buffer.buf[i-1]) << 24
 
 	return
 }
@@ -295,74 +295,6 @@ func (buffer *Buffer) ReadInt32LE() (v int32, err error) {
 
 // AppendUint64BE 以大端方式添加uint64
 func (buffer *Buffer) AppendUint64BE(v uint64) error {
-	buffer.buf = append(buffer.buf,
-		uint8(v),
-		uint8(v>>8),
-		uint8(v>>16),
-		uint8(v>>24),
-		uint8(v>>32),
-		uint8(v>>40),
-		uint8(v>>48),
-		uint8(v>>56))
-	return nil
-}
-
-// ReadUint64BE 大端方式读取uint64
-func (buffer *Buffer) ReadUint64BE() (v uint64, err error) {
-	i := buffer.index + 8
-	if i < 0 || i > len(buffer.buf) {
-		err = io.ErrUnexpectedEOF
-		return
-	}
-	buffer.index = i
-
-	v = uint64(buffer.buf[i-8])
-	v |= uint64(buffer.buf[i-7]) << 8
-	v |= uint64(buffer.buf[i-6]) << 16
-	v |= uint64(buffer.buf[i-5]) << 24
-	v |= uint64(buffer.buf[i-4]) << 32
-	v |= uint64(buffer.buf[i-3]) << 40
-	v |= uint64(buffer.buf[i-2]) << 48
-	v |= uint64(buffer.buf[i-1]) << 56
-	return
-}
-
-// AppendInt64BE 大端方式添加int64
-func (buffer *Buffer) AppendInt64BE(v int64) error {
-	buffer.buf = append(buffer.buf,
-		uint8(v),
-		uint8(v>>8),
-		uint8(v>>16),
-		uint8(v>>24),
-		uint8(v>>32),
-		uint8(v>>40),
-		uint8(v>>48),
-		uint8(v>>56))
-	return nil
-}
-
-// ReadInt64BE 大端方式读取Int64
-func (buffer *Buffer) ReadInt64BE() (v int64, err error) {
-	i := buffer.index + 8
-	if i < 0 || i > len(buffer.buf) {
-		err = io.ErrUnexpectedEOF
-		return
-	}
-	buffer.index = i
-
-	v = int64(buffer.buf[i-8])
-	v |= int64(buffer.buf[i-7]) << 8
-	v |= int64(buffer.buf[i-6]) << 16
-	v |= int64(buffer.buf[i-5]) << 24
-	v |= int64(buffer.buf[i-4]) << 32
-	v |= int64(buffer.buf[i-3]) << 40
-	v |= int64(buffer.buf[i-2]) << 48
-	v |= int64(buffer.buf[i-1]) << 56
-	return
-}
-
-// AppendUint64LE 小端方式添加uint64
-func (buffer *Buffer) AppendUint64LE(v uint64) error {
 	buffer.buf = append(buffer.buf,
 		uint8(v>>56),
 		uint8(v>>48),
@@ -375,8 +307,8 @@ func (buffer *Buffer) AppendUint64LE(v uint64) error {
 	return nil
 }
 
-// ReadUint64LE 小端方式读取uint64
-func (buffer *Buffer) ReadUint64LE() (v uint64, err error) {
+// ReadUint64BE 大端方式读取uint64
+func (buffer *Buffer) ReadUint64BE() (v uint64, err error) {
 	i := buffer.index + 8
 	if i < 0 || i > len(buffer.buf) {
 		err = io.ErrUnexpectedEOF
@@ -392,6 +324,74 @@ func (buffer *Buffer) ReadUint64LE() (v uint64, err error) {
 	v |= uint64(buffer.buf[i-6]) << 40
 	v |= uint64(buffer.buf[i-7]) << 48
 	v |= uint64(buffer.buf[i-8]) << 56
+	return
+}
+
+// AppendInt64BE 大端方式添加int64
+func (buffer *Buffer) AppendInt64BE(v int64) error {
+	buffer.buf = append(buffer.buf,
+		uint8(v>>56),
+		uint8(v>>48),
+		uint8(v>>40),
+		uint8(v>>32),
+		uint8(v>>24),
+		uint8(v>>16),
+		uint8(v>>8),
+		uint8(v))
+	return nil
+}
+
+// ReadInt64BE 大端方式读取Int64
+func (buffer *Buffer) ReadInt64BE() (v int64, err error) {
+	i := buffer.index + 8
+	if i < 0 || i > len(buffer.buf) {
+		err = io.ErrUnexpectedEOF
+		return
+	}
+	buffer.index = i
+
+	v = int64(buffer.buf[i-1])
+	v |= int64(buffer.buf[i-2]) << 8
+	v |= int64(buffer.buf[i-3]) << 16
+	v |= int64(buffer.buf[i-4]) << 24
+	v |= int64(buffer.buf[i-5]) << 32
+	v |= int64(buffer.buf[i-6]) << 40
+	v |= int64(buffer.buf[i-7]) << 48
+	v |= int64(buffer.buf[i-8]) << 56
+	return
+}
+
+// AppendUint64LE 小端方式添加uint64
+func (buffer *Buffer) AppendUint64LE(v uint64) error {
+	buffer.buf = append(buffer.buf,
+		uint8(v),
+		uint8(v>>8),
+		uint8(v>>16),
+		uint8(v>>24),
+		uint8(v>>32),
+		uint8(v>>40),
+		uint8(v>>48),
+		uint8(v>>56))
+	return nil
+}
+
+// ReadUint64LE 小端方式读取uint64
+func (buffer *Buffer) ReadUint64LE() (v uint64, err error) {
+	i := buffer.index + 8
+	if i < 0 || i > len(buffer.buf) {
+		err = io.ErrUnexpectedEOF
+		return
+	}
+	buffer.index = i
+
+	v = uint64(buffer.buf[i-8])
+	v |= uint64(buffer.buf[i-7]) << 8
+	v |= uint64(buffer.buf[i-6]) << 16
+	v |= uint64(buffer.buf[i-5]) << 24
+	v |= uint64(buffer.buf[i-4]) << 32
+	v |= uint64(buffer.buf[i-3]) << 40
+	v |= uint64(buffer.buf[i-2]) << 48
+	v |= uint64(buffer.buf[i-1]) << 56
 	return
 }
 
@@ -418,14 +418,14 @@ func (buffer *Buffer) ReadInt64LE() (v int64, err error) {
 	}
 	buffer.index = i
 
-	v = int64(buffer.buf[i-1])
-	v |= int64(buffer.buf[i-2]) << 8
-	v |= int64(buffer.buf[i-3]) << 16
-	v |= int64(buffer.buf[i-4]) << 24
-	v |= int64(buffer.buf[i-5]) << 32
-	v |= int64(buffer.buf[i-6]) << 40
-	v |= int64(buffer.buf[i-7]) << 48
-	v |= int64(buffer.buf[i-8]) << 56
+	v = int64(buffer.buf[i-8])
+	v |= int64(buffer.buf[i-7]) << 8
+	v |= int64(buffer.buf[i-6]) << 16
+	v |= int64(buffer.buf[i-5]) << 24
+	v |= int64(buffer.buf[i-4]) << 32
+	v |= int64(buffer.buf[i-3]) << 40
+	v |= int64(buffer.buf[i-2]) << 48
+	v |= int64(buffer.buf[i-1]) << 56
 	return
 }
 
